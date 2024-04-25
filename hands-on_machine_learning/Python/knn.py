@@ -56,9 +56,3 @@ X_train.loc[68]
 y_test.
 
 
-
-data = np.random.randn(100, 6)
-np.round(data, 3)
-df = pd.DataFrame(data=data, columns=["A", "B", "C", "D", "E", "F"])
-df.to_csv("data.csv", float_format="%0.4f")
-df2 = pd.read_csv("data.csv")
