@@ -97,3 +97,14 @@ df_iris["target"]
 plt.plot(df_iris.index ,df_iris["sepal length (cm)"], df_iris["sepal width (cm)"])
 plt.scatter(df_iris["sepal width (cm)"], df_iris["sepal length (cm)"])
 plt.bar( df['target'], df['sepal width (cm)'], label='age', color=["red", "blue"])
+
+
+plt.figure(figsize=(10,6))
+plt.hist(df_iris["petal width (cm)"], bins=30, label="petal width (cm)", alpha=0.3)
+plt.hist(df_iris["petal length (cm)"], bins=30, label="petal length (cm)", alpha=0.3)
+plt.hist(df_iris["sepal width (cm)"], bins=30, label="sepal width (cm)", alpha=0.7)
+plt.hist(df_iris["sepal length (cm)"], bins=30, label="sepal length (cm)", alpha=0.3)
+plt.legend()
+
+
+plt.boxplot(df_iris["petal width (cm)"], )
