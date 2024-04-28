@@ -6,3 +6,6 @@ dfo = pd.read_csv('../data/P87-S7-Advanced-Manipulation-Resources/flights2.csv.g
 print(dfo.columns)
 dfo.head()
 
+
+dfo.sort_values(["TAIL_NUMBER", "FLIGHT_NUMBER"], inplace=True)
+dfo.sort_index(inplace=True)
