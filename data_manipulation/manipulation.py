@@ -27,7 +27,6 @@ df.AIRLINE.unique()
 df.AIRLINE.value_counts()
 (df.AIRLINE == "AS").sum()
 
-df.indexcount()
 
 df.AIRLINE.unique().sum()
 
