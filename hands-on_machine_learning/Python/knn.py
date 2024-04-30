@@ -80,7 +80,7 @@ plt.tight_layout()
 plt.show()
 plt.savefig("plot.png")
 
-df =df_iris.groupby(["target"]).mean().reset_index()
+df = df_iris.groupby(["target"]).mean().reset_index()
 
 df.columns
 
