@@ -124,3 +124,22 @@ HIDDEN_SIZE = 128
 FC1_SIZE = 256
 FC2_SIZE = 128
 
+model = LSTM(VOCAB_SIZE, EMBEDDING_DIM, HIDDEN_SIZE, bidirectional=True)
+print(model)
+
+import torch.optim as optim
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = model.to(device)
+
+# Loss and Optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(params=model.parameters(), lr=0.0001)
+
+#Trainig Loop
+NUM_EPOCHS = 3
+
+for epoch in range(NUM_EPOCHS):
+  for batch in dataloader:
+
+model.parameters()
+
