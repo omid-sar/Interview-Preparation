@@ -36,9 +36,9 @@ class MyDataset(Dataset):
         return len(self.data)
     
     def __getitem__(self, index):
-        x = self.data.iloc[index].to_numpy().astype(float)
+        x = self.data.iloc[index].to_numpy().reshape(28,28).astype(float)
         y = self.labels.iloc[index]
-        return torch.tensor(x, dtype=torch.float32), torch.tensor(y, dtype=torch.int64)
+        return torch.tensor(x, dtype=torch.float32).unsqueeze(0), torch.tensor(y, dtype=torch.int64)
     
 
 dataset = MyDataset(X,y )
@@ -49,7 +49,7 @@ print(first_batch)
 
 
 labels = torch.tensor(y, dtype=torch.int64)
-data = torch.tensor(X.to_numpy(), dtype=torch.float32)
+data = torch.tensor(X.to_numpy().reshape(-1, 1, 28, 28), dtype=torch.float32)
 dataset1 = TensorDataset(data, labels)
 dataloader = DataLoader(dataset1, shuffle=True, batch_size=32)
 first_batch = next(iter(dataloader))
@@ -87,8 +87,18 @@ for epoch in range(num_epochs):
     for batch_idx, (inputs, targets) in enumerate(dataloader):
         # Move data to GPU
         inputs, targets = inputs.to(device), targets.to(device)
-        # Forwa
+        # Forward path
         outputs = model(inputs)
+        # Calculate Loss
+        loss = criterion(outputs, targets)
+        # Backward Path and optimization
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        if batch_idx % 100 == 0:
+            print(f'Epoch [{epoch+1}/{num_epochs}], Step [{batch_idx}/{len(dataloader)}], Loss: {loss.item():.4f}')
+
+
 
 
 
