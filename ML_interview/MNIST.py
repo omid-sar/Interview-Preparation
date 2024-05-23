@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
 
 import torch
 import torch.nn as nn
@@ -9,8 +10,16 @@ import torch.nn.functional as F
 os.getcwd()
 df = pd.read_csv("../../MNIST Data( Digit Recognizer)/data/raw/train.csv")
 
-X = 
-my_data.loc[1]
+X = df.drop("label", axis=1)
+y = df["label"]
+
+
+plt.figure(figsize=(4,4))
+plt.imshow(X.loc[1].to_numpy().reshape(28,28), cmap="Greys")
+plt.title("An Example")
+plt.show()
+
+
 
 from torch.utils.data import DataLoader, Dataset
 
@@ -70,3 +79,9 @@ output = model(input_data)
 
 #print(activations[0].shape)
 print(activations)
+
+
+
+
+from transformers import BertTokenizer
+tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
