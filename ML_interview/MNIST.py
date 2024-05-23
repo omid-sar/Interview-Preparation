@@ -14,6 +14,7 @@ X = df.drop("label", axis=1)
 y = df["label"]
 
 
+
 plt.figure(figsize=(4,4))
 plt.imshow(X.loc[1].to_numpy().reshape(28,28), cmap="Greys")
 plt.title("An Example")
@@ -21,18 +22,25 @@ plt.show()
 
 
 
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, TensorDataset
 
 class MyDataset(Dataset):
-    def __init__(self, data):
+    def __init__(self, data, labels):
         self.data = data
+        self.labels = labels
     
     def __len__(self):
         return len(self.data)
     
     def __getitem__(self, index):
-        return self.data[index]
-dataset = MyDataset(my_data)
+        x = self.data.iloc[index].to_numpy().astype(float)
+        y = self.labels.iloc[index]
+        return x,y
+    
+
+
+
+dataset = MyDataset(X,y )
 dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 first_batch = next(iter(dataloader))
 print(first_batch)
@@ -79,6 +87,33 @@ output = model(input_data)
 
 #print(activations[0].shape)
 print(activations)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 sequences = [' @user when a father is dysfunctional and is so selfish he drags his kids into his dysfunction.   #run',
