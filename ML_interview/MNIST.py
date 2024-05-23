@@ -7,6 +7,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
+#---------------------------- Data Exploration ----------------------------# 
+
 os.getcwd()
 df = pd.read_csv("../../MNIST Data( Digit Recognizer)/data/raw/train.csv")
 
@@ -20,6 +22,7 @@ plt.imshow(X.loc[1].to_numpy().reshape(28,28), cmap="Greys")
 plt.title("An Example")
 plt.show()
 
+#---------------------------- Load DATA ----------------------------# 
 
 
 from torch.utils.data import DataLoader, Dataset, TensorDataset
@@ -27,7 +30,7 @@ from torch.utils.data import DataLoader, Dataset, TensorDataset
 class MyDataset(Dataset):
     def __init__(self, data, labels):
         self.data = data
-        self.labels = labels
+        self.labels = labels.astype(int)
     
     def __len__(self):
         return len(self.data)
@@ -35,10 +38,8 @@ class MyDataset(Dataset):
     def __getitem__(self, index):
         x = self.data.iloc[index].to_numpy().astype(float)
         y = self.labels.iloc[index]
-        return x,y
+        return torch.tensor(x, dtype=torch.float32), torch.tensor(y, dtype=torch.int64)
     
-
-
 
 dataset = MyDataset(X,y )
 dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
@@ -47,7 +48,14 @@ print(first_batch)
 
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+labels = torch.tensor(y, dtype=torch.int64)
+data = torch.tensor(X.to_numpy(), dtype=torch.float32)
+dataset1 = TensorDataset(data, labels)
+dataloader = DataLoader(dataset1, shuffle=True, batch_size=32)
+first_batch = next(iter(dataloader))
+print(first_batch)
+first_batch[0][0].shape
+#---------------------------- Model ----------------------------# 
 
 class SimpleCNN(nn.Module):
     def __init__(self):
@@ -64,7 +72,26 @@ class SimpleCNN(nn.Module):
         return x
 
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 model = SimpleCNN().to(device)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+#---------------------------- Training Loop----------------------------# 
+
+num_epochs = 10
+for epoch in range(num_epochs):
+    model.train()
+    for batch_idx, (inputs, targets) in enumerate(dataloader):
+        # Move data to GPU
+        inputs, targets = inputs.to(device), targets.to(device)
+        # Forwa
+        outputs = model(inputs)
+
+
+
 
 activations = []
 
