@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 
 import torch
@@ -5,8 +6,10 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
+os.getcwd()
+df = pd.read_csv("../../MNIST Data( Digit Recognizer)/data/raw/train.csv")
 
-my_data = pd.read_csv('../data/data_manipulation_resources/twitter_toxic_final_balanced_dataset.csv', usecols=["Toxicity", "tweet"])
+X = 
 my_data.loc[1]
 
 from torch.utils.data import DataLoader, Dataset
