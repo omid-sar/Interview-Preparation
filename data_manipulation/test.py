@@ -1,7 +1,32 @@
+import pandas as pd
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+
+
+my_data = pd.read_csv('../data/P87-S8-Time-Series-Resources/all_stocks_5yr.csv', parse_dates=['date'])
+
+
+
+from torch.utils.data import DataLoader, Dataset
+
+class MyDataset(Dataset):
+    def __init__(self, data):
+        self.data = data
+    
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        return self.data[index]
+dataset = MyDataset(my_data)
+dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+first_batch = next(iter(dataloader))
+print(first_batch)
+
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -41,5 +66,5 @@ input_data = torch.randn(1, 1, 28 , 28)
 
 output = model(input_data)
 
-print(activations[0].shape)
+#print(activations[0].shape)
 print(activations)
