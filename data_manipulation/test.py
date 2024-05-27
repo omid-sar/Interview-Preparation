@@ -67,3 +67,9 @@ output = model(input_data)
 
 #print(activations[0].shape)
 print(activations)
+
+
+
+class LSTM(nn.Module):
+    def __init__(self, )
+        
