@@ -105,9 +105,13 @@ model = ToxicClassifierModel(vocab_size, num_class)
 print(model)
 
 
-
 import torch.optim as optim
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 # Loss and Optimizer
-optimizer = optim.Adam(params=)
+optimizer = optim.Adam(params=model.parameters(), lr=0.0001)
+criterion = nn.CrossEntropyLoss()
+
+
+
