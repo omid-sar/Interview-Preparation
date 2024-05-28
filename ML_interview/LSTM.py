@@ -96,10 +96,10 @@ class ToxicClassifierModel(nn.Module):
 vocab_size = tokenizer.vocab_size
 num_class = 2
 embedding_dim = 50
-hidden_size=128
-num_LSTM_layers=2
+hidden_size =1 28
+num_LSTM_layers = 2
 fc_layers = [128, 256]
-bidirectional=True 
+bidirectional = True 
 
 model = ToxicClassifierModel(vocab_size, num_class)
 print(model)
@@ -113,5 +113,12 @@ model.to(device)
 optimizer = optim.Adam(params=model.parameters(), lr=0.0001)
 criterion = nn.CrossEntropyLoss()
 
+# ----------------------------------Training Loop---------------------------------
+num_epochs = 10
+for epoch in range(num_epochs):
+    model.train()
 
-
+    for batch_idx, (inputs, targets) in enumerate(dataloader):
+        # Move data to GPU
+        inputs, targets = inputs.to(device), targets.to(device)
+        
