@@ -63,7 +63,8 @@ class ToxicClassifierModel(nn.Module):
         self.bidirectional = bidirectional
         self.hidden_size= hidden_size
         self.embedding = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_dim)
-        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True, num_layers=num_LSTM_layers, bidirectional)
+        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True,
+                             num_layers=num_LSTM_layers, bidirectional=bidirectional)
         fc_input_size = 2 * hidden_size if bidirectional==True else hidden_size
         self.fc1 = nn.Linear(fc_input_size, fc_layers[0])
         self.fc2 = nn.Linear(fc_layers[0], fc_layers[1])
@@ -91,3 +92,22 @@ class ToxicClassifierModel(nn.Module):
         
         return out
 
+
+vocab_size = tokenizer.vocab_size
+num_class = 2
+embedding_dim = 50
+hidden_size=128
+num_LSTM_layers=2
+fc_layers = [128, 256]
+bidirectional=True 
+
+model = ToxicClassifierModel(vocab_size, num_class)
+print(model)
+
+
+
+import torch.optim as optim
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Loss and Optimizer
+optimizer = optim.Adam(params=)
