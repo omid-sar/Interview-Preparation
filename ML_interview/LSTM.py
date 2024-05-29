@@ -96,7 +96,7 @@ class ToxicClassifierModel(nn.Module):
 vocab_size = tokenizer.vocab_size
 num_class = 2
 embedding_dim = 50
-hidden_size =1 28
+hidden_size =128
 num_LSTM_layers = 2
 fc_layers = [128, 256]
 bidirectional = True 
@@ -121,4 +121,10 @@ for epoch in range(num_epochs):
     for batch_idx, (inputs, targets) in enumerate(dataloader):
         # Move data to GPU
         inputs, targets = inputs.to(device), targets.to(device)
-        
+        outputs = model(inputs)
+        loss = criterion(outputs, targets)
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        if batch_idx % 100 ==0:
+            print(f'Epoch: [{epoch+1}/ {num_epochs}], Step: [{batch_idx}/{len(dataloader)}], Loss: {loss.item():.4f}')
