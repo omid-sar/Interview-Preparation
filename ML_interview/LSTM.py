@@ -16,7 +16,7 @@ sequences = [' @user when a father is dysfunctional and is so selfish he drags h
  'no comment!  in #australia   #opkillingbay #seashepherd #helpcovedolphins #thecove  #helpcovedolphins',
  'ouch...junior is angryð\x9f\x98\x90#got7 #junior #yugyoem   #omg ','i am thankful for having a paner. #thankful #positive' ]
 
-
+wget https://raw.githubusercontent.com/omid-sar/Project_Data_Hub/main/twitter_toxic_final_balanced_dataset.csv
 
 # ---------------------------------------------------------------------
 import torch
