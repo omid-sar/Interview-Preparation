@@ -2,9 +2,9 @@ import requests
 
 url = "https://raw.githubusercontent.com/omid-sar/Project_Data_Hub/main/twitter_toxic_final_balanced_dataset.csv"
 response = requests.get(url)
-
+#data/data_manipulation_resources/twitter_toxic_final_balanced_dataset.csv
 if response.status_code == 200:
-  with open("twitter_toxic.csv", "wb") as file:
+  with open("../data/data_manipulation_resources/twitter_toxic.csv", "wb") as file:
     file.write(response.content)
   print("File downloaded and saved successfully")
 else:
@@ -14,7 +14,7 @@ else:
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv("twitter_toxic.csv")
+df = pd.read_csv("../data/data_manipulation_resources/twitter_toxic.csv")
 df = df.drop(columns=["Unnamed: 0"], axis=1)
 df.head()
 
@@ -87,9 +87,11 @@ train_dataset, val_dataset, test_dataset = random_split(dataset, lengths=[train_
 
 
 BATCH_SIZE = 32
-NUM_WORKERS = 2
-dataloader = DataLoader(train_dataset, shuffle=True, batch_size=BATCH_SIZE, pin_memory=True, num_workers=NUM_WORKERS)
-next(iter(dataloader))
+NUM_WORKERS = 0
+dataloader_train = DataLoader(train_dataset, shuffle=True, batch_size=BATCH_SIZE, pin_memory=True, num_workers=NUM_WORKERS)
+dataloader_val = DataLoader(val_dataset, shuffle=True, batch_size=BATCH_SIZE, pin_memory=True, num_workers=NUM_WORKERS)
+dataloader_test = DataLoader(test_dataset, shuffle=True, batch_size=BATCH_SIZE, pin_memory=True, num_workers=NUM_WORKERS)
+next(iter(dataloader_train))
 
 # ---------------------------------------------------------------------
 import torch.nn as nn
@@ -148,22 +150,40 @@ criterion = nn.CrossEntropyLoss()
 
 NUM_EPOCHS = 1
 
-for epoch in range(NUM_EPOCHS):
-  model.train()
+def training_loop(model, dataloader_train, device, criterion, optimizer):
+    for epoch in range(NUM_EPOCHS):
+        model.train()
+        for batch_idx, (inputs, targets) in enumerate(train_dataloader):
+            inputs, targets = inputs.to(device), targets.to(device)
 
-  for batch_idx, (inputs, targets) in enumerate(dataloader):
-    inputs, targets = inputs.to(device), targets.to(device)
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
 
-    outputs = model(inputs)
-    loss = criterion(outputs, targets)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            if batch_idx %100 == 0:
+                print(f"Epoch: [{epoch+1}/{NUM_EPOCHS}], Step: [{batch_idx}/{len(dataloader)}], Loss: [{loss.item():.4f}]")
 
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-    if batch_idx %100 == 0:
-      print(f"Epoch: [{epoch+1}/{NUM_EPOCHS}], Step: [{batch_idx}/{len(dataloader)}], Loss: [{loss.item():.4f}]")
+training_loop(model, train_dataloader)
+# ---------------------------------------------------------------------
+def evaluate(model, dataloader, device, criterion, optimizer):
+        model.eval()
+
+        for batch_idx, (inputs, targets) in enumerate(dataloader):
+            inputs, targets = inputs.to(device), targets.to(device)
+
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            if batch_idx %100 == 0:
+                print(f"Epoch: [{epoch+1}/{NUM_EPOCHS}], Step: [{batch_idx}/{len(dataloader)}], Loss: [{loss.item():.4f}]")
 
 
+# ---------------------------------------------------------------------
 
-
+# ---------------------------------------------------------------------
 
