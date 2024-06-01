@@ -9,8 +9,8 @@ if response.status_code == 200:
   print("File downloaded and saved successfully")
 else:
   print(f"Failed to download file. Status code: {response.status_code}")
-# ---------------------------------------------------------------------
 
+# ---------------------------------------------------------------------
 import pandas as pd
 import numpy as np
 
@@ -75,8 +75,8 @@ class MyDataset(Dataset):
 
 
 dataset = MyDataset(data=model_inputs.input_ids, labels=y)
-# ---------------------------------------------------------------------
 
+# ---------------------------------------------------------------------
 from torch.utils.data import random_split, DataLoader
 
 train_size = int(len(dataset) * 0.7)
@@ -148,31 +148,13 @@ model.to(device)
 optimizer = optim.Adam(params=model.parameters(), lr=0.0001)
 criterion = nn.CrossEntropyLoss()
 
-NUM_EPOCHS = 1
-
-def training_loop(model, dataloader_train, device, criterion, optimizer):
-    for epoch in range(NUM_EPOCHS):
+def training_loop(num_epochs, model, dataloader, device, criterion, optimizer):
+    for epoch in range(num_epochs):
         model.train()
-        for batch_idx, (inputs, targets) in enumerate(train_dataloader):
-            inputs, targets = inputs.to(device), targets.to(device)
-
-            outputs = model(inputs)
-            loss = criterion(outputs, targets)
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            if batch_idx %100 == 0:
-                print(f"Epoch: [{epoch+1}/{NUM_EPOCHS}], Step: [{batch_idx}/{len(dataloader)}], Loss: [{loss.item():.4f}]")
-
-training_loop(model, train_dataloader)
-# ---------------------------------------------------------------------
-def evaluate(model, dataloader, device, criterion, optimizer):
-        model.eval()
-
         for batch_idx, (inputs, targets) in enumerate(dataloader):
             inputs, targets = inputs.to(device), targets.to(device)
 
+
             outputs = model(inputs)
             loss = criterion(outputs, targets)
 
@@ -180,7 +162,31 @@ def evaluate(model, dataloader, device, criterion, optimizer):
             loss.backward()
             optimizer.step()
             if batch_idx %100 == 0:
-                print(f"Epoch: [{epoch+1}/{NUM_EPOCHS}], Step: [{batch_idx}/{len(dataloader)}], Loss: [{loss.item():.4f}]")
+                print(f"Epoch: [{epoch+1}/{num_epochs}], Step: [{batch_idx}/{len(dataloader)}], Loss: [{loss.item():.4f}]")
+
+training_loop(num_epochs=5, model=model, dataloader=dataloader_train, device=device , criterion=criterion, optimizer=optimizer)
+
+# ---------------------------------------------------------------------
+def evaluate(model, dataloader, device, criterion, optimizer):
+        model.eval()
+        total_loss = 0
+        correct_predictions = 0
+        total_sample = 0
+
+        with torch.no_grad():
+            for inputs, targets in dataloader:
+                inputs, targets = inputs.to(device), targets.to(device)
+
+                outputs = model(inputs)
+                loss = criterion(outputs, targets)
+
+                total_loss += loss.item * input.size(0)
+                _, predicted = torch.max(outputs.data, 1)
+                correct_predictions += (predicted == targets).sum().item()
+                total_samples += targets.size(0)
+
+                average_loss = total_loss / total_samples
+                accuracy = 100 * correct_predictions / total_sample"
 
 
 # ---------------------------------------------------------------------
