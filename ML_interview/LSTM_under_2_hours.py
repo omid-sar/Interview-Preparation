@@ -86,7 +86,9 @@ next(iter(dataloader))
 # ----------------------------------------------- Downlaod ------------------------------------------------
 import torch.nn as nn
 
-class LSTM
+class LSTM(nn.Module):
+    def __init(self, ):
+        super(LSTM, self).__init__()
 
 
 
