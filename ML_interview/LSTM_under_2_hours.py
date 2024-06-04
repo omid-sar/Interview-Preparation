@@ -44,9 +44,9 @@ axes[1].set_xlim([0, 120])
 axes[1].legend()
 plt.show()
 
-# ----------------------------------------------- Data Loader -----------------------------------------------
+# ----------------------------------------------- Dataset -----------------------------------------------
 import torch
-from torch.utils.data import DataLoader, Dataset, TensorDataset
+from torch.utils.data import  Dataset, TensorDataset
 
 class MyDataset(Dataset):
 
@@ -62,19 +62,31 @@ class MyDataset(Dataset):
         y = self.labels[idx]
         return x, y
 
+X = [seq for seq in df["tweet"]]
+y = [torch.tensor(seq) for seq in df["Toxicity"]]
 
 
+model_input = tokenizer(X, padding=True, truncation=True, max_length=64, return_tensors="pt")
+dataset = MyDataset(data=model_input.input_ids, labels=y)
 
+# ----------------------------------------------- Data Loader ------------------------------------------------
+from torch.utils.data import random_split, DataLoader
 
+train_size = int(len(dataset) * 0.7)
+val_size = int(len(dataset) * 0.2)
+test_size = len(dataset) - train_size - val_size
 
+train_dataset, val_dataset, test_dataset = random_split(dataset=dataset, lengths=[train_size, val_size, test_size])
+
+batch_size = 32
+num_workers = 2
+dataloader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+next(iter(dataloader))
 
 # ----------------------------------------------- Downlaod ------------------------------------------------
+import torch.nn as nn
 
-
-
-
-# ----------------------------------------------- Downlaod ------------------------------------------------
-
+class LSTM
 
 
 
