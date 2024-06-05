@@ -63,7 +63,7 @@ class MyDataset(Dataset):
         return x, y
 
 X = [seq for seq in df["tweet"]]
-y = [torch.tensor(seq) for seq in df["Toxicity"]]
+y= torch.tensor(df["Toxicity"].values, dtype=torch.long)
 
 MAX_LENGTH=64
 model_input = tokenizer(X, padding=True, truncation=True, max_length=MAX_LENGTH, return_tensors="pt")
@@ -85,7 +85,6 @@ next(iter(dataloader))
 
 # ----------------------------------------------- Downlaod ------------------------------------------------
 import torch.nn as nn
-
 
 class MyLSTM(nn.Module):
     def __init__(self, vocab_size, embedding_dim=64, bidirectional=True, lstm_hidden_size=128,
@@ -127,6 +126,41 @@ HIDDEN_LAYERS = [256, 128]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = MyLSTM(vocab_size=VOCAB_SIZE)
+model.to(device)
 print(model)
+
+# ---------------------------------------------- Training Loop ----------------------------------------------
+import torch.optim as optim
+
+LR_RATE = 0.001
+optimizer = optim.Adam(params=model.parameters(), lr=LR_RATE)
+criterion = nn.CrossEntropyLoss()
+
+NUM_EPOCHS = 10
+def training_loop(model, dataloader, optimizer, criterion, num_epochs=NUM_EPOCHS):
+    model.train()
+    for epoch in range(num_epochs):
+        for batch_idx, (inputs, targets) in enumerate(dataloader):
+            inputs, targets = inputs.to(device), targets.to(device)
+
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+            if batch_idx % 100 == 0:
+                print(f" Epoch: [{epoch+1}/ {num_epochs}], Step: [{batch_idx}/{len(dataloader)}], Loss: [{loss.item():.4f}]")
+
+training_loop(model=model, dataloader=dataloader,optimizer=optimizer, criterion=criterion,  num_epochs=NUM_EPOCHS)
+# ----------------------------------------------- Model Evaluation ------------------------------------------------
+def evaluation(model, dataset, ):
+    model.eval()
+    total_loss = 0
+    correct_prediction = 0
+    total_sample
+
+
 
 # ----------------------------------------------- Downlaod ------------------------------------------------
