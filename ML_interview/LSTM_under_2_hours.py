@@ -86,16 +86,17 @@ next(iter(dataloader))
 # ----------------------------------------------- Downlaod ------------------------------------------------
 import torch.nn as nn
 
-class LSTM(nn.Module):
-    def __init(self, vocab_size, embedding_dim=64, bidirectional=True, lstm_hidden_size=128,
+
+class MyLSTM(nn.Module):
+    def __init__(self, vocab_size, embedding_dim=64, bidirectional=True, lstm_hidden_size=128,
                 num_lstm_layers=2, hidden_layers=[256,128], num_classes=2):
-        super(LSTM, self).__init__()
+        super(MyLSTM, self).__init__()
         self.bidirectional = bidirectional
         self.num_lstm_layers = num_lstm_layers
         self.lstm_hidden_size = lstm_hidden_size
         self.embeddings = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_dim)
         self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=lstm_hidden_size, num_layers =num_lstm_layers, 
-                            batch_fist=True, bidirectional=bidirectional)
+                            batch_first=True, bidirectional=bidirectional)
         fc_input_size = 2 * lstm_hidden_size if bidirectional else lstm_hidden_size
         self.fc1 = nn.Linear(in_features=fc_input_size, out_features=hidden_layers[0])
         self.fc2 = nn.Linear(hidden_layers[0], hidden_layers[1])
@@ -107,11 +108,25 @@ class LSTM(nn.Module):
         x = self.embeddings(x)
 
         h0 = torch.zeros((2 if self.bidirectional else 1) * self.num_lstm_layers, x.size(0), self.lstm_hidden_size).to(device)
-        h0 = torch.zeros((2 if self.bidirectional else 1) * self.num_lstm_layers, x.size(0), self.lstm_hidden_size).to(device)
+        c0 = torch.zeros((2 if self.bidirectional else 1) * self.num_lstm_layers, x.size(0), self.lstm_hidden_size).to(device)
+        out, _ = self.lstm(x, (h0, c0))
+        out = out[:, -1, :]
 
-        out = self.lstm()
+        out = self.relu(self.fc1(out))
+        out = self.relu(self.fc2(out))
+        out = self.sigmoid(self.fc3(out))
+        
+        return out
+    
+VOCAB_SIZE = tokenizer.vocab_size
+EMBEDDING_DIM = 64
+LSTM_HIDDEN_SIZE = 128
+LSTM_NUM_LAYERs = 2
+LSTM_BIDIRECTIONAL = True
+HIDDEN_LAYERS = [256, 128]
 
-
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = MyLSTM(vocab_size=VOCAB_SIZE)
+print(model)
 
 # ----------------------------------------------- Downlaod ------------------------------------------------
