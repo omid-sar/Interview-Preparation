@@ -65,8 +65,8 @@ class MyDataset(Dataset):
 X = [seq for seq in df["tweet"]]
 y = [torch.tensor(seq) for seq in df["Toxicity"]]
 
-
-model_input = tokenizer(X, padding=True, truncation=True, max_length=64, return_tensors="pt")
+MAX_LENGTH=64
+model_input = tokenizer(X, padding=True, truncation=True, max_length=MAX_LENGTH, return_tensors="pt")
 dataset = MyDataset(data=model_input.input_ids, labels=y)
 
 # ----------------------------------------------- Data Loader ------------------------------------------------
@@ -87,8 +87,30 @@ next(iter(dataloader))
 import torch.nn as nn
 
 class LSTM(nn.Module):
-    def __init(self, ):
+    def __init(self, vocab_size, embedding_dim=64, bidirectional=True, lstm_hidden_size=128,
+                num_lstm_layers=2, hidden_layers=[256,128], num_classes=2):
         super(LSTM, self).__init__()
+        self.bidirectional = bidirectional
+        self.num_lstm_layers = num_lstm_layers
+        self.lstm_hidden_size = lstm_hidden_size
+        self.embeddings = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_dim)
+        self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=lstm_hidden_size, num_layers =num_lstm_layers, 
+                            batch_fist=True, bidirectional=bidirectional)
+        fc_input_size = 2 * lstm_hidden_size if bidirectional else lstm_hidden_size
+        self.fc1 = nn.Linear(in_features=fc_input_size, out_features=hidden_layers[0])
+        self.fc2 = nn.Linear(hidden_layers[0], hidden_layers[1])
+        self.fc3 = nn.Linear(hidden_layers[1], num_classes)
+        self.relu = nn.ReLU()
+        self.sigmoid = nn.Sigmoid()
+    
+    def forward(self, x):
+        x = self.embeddings(x)
+
+        h0 = torch.zeros((2 if self.bidirectional else 1) * self.num_lstm_layers, x.size(0), self.lstm_hidden_size).to(device)
+        h0 = torch.zeros((2 if self.bidirectional else 1) * self.num_lstm_layers, x.size(0), self.lstm_hidden_size).to(device)
+
+        out = self.lstm()
+
 
 
 

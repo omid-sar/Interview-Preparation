@@ -110,7 +110,7 @@ class MyLSTM(nn.Module):
     fc_input_size = 2 * lstm_hidden_size if bidirectional else lstm_hidden_size
     self.fc1 = nn.Linear(fc_input_size, hidden_layers[0])
     self.fc2 = nn.Linear(hidden_layers[0], hidden_layers[1])
-    self.fc3 = nn.Linear(hidden_layers[1], lstm_num_layers)
+    self.fc3 = nn.Linear(hidden_layers[1], num_classes)
     self.relu = nn.ReLU()
     self.sigmoid = nn.Sigmoid()
 
