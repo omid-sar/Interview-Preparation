@@ -139,9 +139,12 @@ optimizer = optim.Adam(params=model.parameters(), lr=LR_RATE)
 criterion = nn.CrossEntropyLoss()
 
 NUM_EPOCHS = 10
-def training_loop(model, dataloader, optimizer, criterion, num_epochs=NUM_EPOCHS):
-    model.train()
+def training_loop(model, dataloader,dataloader_val,  optimizer, criterion, device, num_epochs=NUM_EPOCHS):
     for epoch in range(num_epochs):
+        model.train()
+        total_train_loss = 0
+        total_samples = 0   
+
         for batch_idx, (inputs, targets) in enumerate(dataloader):
             inputs, targets = inputs.to(device), targets.to(device)
 
@@ -152,10 +155,20 @@ def training_loop(model, dataloader, optimizer, criterion, num_epochs=NUM_EPOCHS
             loss.backward()
             optimizer.step()
 
-            if batch_idx % 100 == 0:
-                print(f" Epoch: [{epoch+1}/ {num_epochs}], Step: [{batch_idx}/{len(dataloader)}], Loss: [{loss.item():.4f}]")
+            total_train_loss += loss.item() * inputs.size(0)
+            total_samples += inputs.size(0)
 
-training_loop(model=model, dataloader=dataloader,optimizer=optimizer, criterion=criterion,  num_epochs=NUM_EPOCHS)
+            if batch_idx % 100 == 0:
+                print(f" Epoch: [{epoch+1}/ {num_epochs}], Step: [{batch_idx}/{len(dataloader)}], Batch Loss: [{loss.item():.4f}]")
+    
+        average_train_loss = total_train_loss / total_samples
+        average_val_loss, val_accuracy = evaluation(model, dataloader_val, device, criterion)
+
+        print(f" { 100 * '='} \nAverage Training Loss: [{average_train_loss:.4f}] ")
+        print(f"Average Validation Loss: {average_val_loss:.4f}, Accuracy: {val_accuracy:.2f} \n { 100 * '='}")
+            
+
+
 # ----------------------------------------------- Model Evaluation ------------------------------------------------
 def evaluation(model, dataloader, device, criterion):
     model.eval()
@@ -177,16 +190,16 @@ def evaluation(model, dataloader, device, criterion):
     average_loss = total_loss/ total_sample
     accuracy = 100 * correct_prediction/ total_sample
 
-    print(f"Average Loss: {average_loss:.4f}, Accuracy: {accuracy:.2f}")
+    
     return average_loss, accuracy
 
-average_loss, accuracy = evaluation(model=model, dataloader=dataloader_val, device=device, criterion=criterion)
+
+# ----------------------------------------------- Main ------------------------------------------------
+
+def main():
+    training_loop(model=model,dataloader_val=dataloader_val, dataloader=dataloader,optimizer=optimizer, criterion=criterion, device=device, num_epochs=NUM_EPOCHS)
 
 
+if __name__ == "__main__":
+    main()
 
-
-
-
-
-
-# ----------------------------------------------- Downlaod ------------------------------------------------
