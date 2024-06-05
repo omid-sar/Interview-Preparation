@@ -159,14 +159,19 @@ def training_loop(model, dataloader,dataloader_val,  optimizer, criterion, devic
             total_train_loss += loss.item() * inputs.size(0)
             total_samples += inputs.size(0)
 
-            if batch_idx % 100 == 0:
-                print(f" Epoch: [{epoch+1}/ {num_epochs}], Step: [{batch_idx}/{len(dataloader)}], Batch Loss: [{loss.item():.4f}]")
+            #if batch_idx % 100 == 0:
+                #print(f" Epoch: [{epoch+1}/ {num_epochs}], Step: [{batch_idx}/{len(dataloader)}], Batch Loss: [{loss.item():.4f}]")
     
         average_train_loss = total_train_loss / total_samples
         average_val_loss, val_accuracy = evaluation(model, dataloader_val, device, criterion)
+        train_losses.append(average_val_loss)
+        val_losses.append(average_val_loss)
+        val_accuracies.append(val_accuracy)
 
-        print(f" { 100 * '='} \nAverage Training Loss: [{average_train_loss:.4f}] ")
-        print(f"Average Validation Loss: {average_val_loss:.4f}, Accuracy: {val_accuracy:.2f} \n { 100 * '='}")
+        loss_plot(train_losses, val_losses, val_accuracies, title=f'Epoch: {epoch+1}/{num_epochs}')
+
+        #print(f" { 100 * '='} \nAverage Training Loss: [{average_train_loss:.4f}] ")
+        #print(f"Average Validation Loss: {average_val_loss:.4f}, Accuracy: {val_accuracy:.2f} \n { 100 * '='}")
             
 
 
@@ -194,8 +199,21 @@ def evaluation(model, dataloader, device, criterion):
     
     return average_loss, accuracy
 
+# ----------------------------------------------- LOSS PLOT ------------------------------------------------
+import matplotlib.pyplot as plt
+from IPython.display import clear_output
 
-def loss_plot()
+def loss_plot(losses_train, losses_val, val_accuracies, title=''):
+    clear_output(wait=True)
+    fig, axes = plt.subplots(2,1, figsize=(14, 10))
+    axes[0].plot(losses_train, label="Training Loss", color="red")
+    axes[0].plot(losses_val, label="Validation Loss", color="blue")
+    axes[0].legend()
+
+    axes[1].plot(val_accuracies, label="Accuracy")
+    axes[1].legend()
+
+    plt.show()
 # ----------------------------------------------- Main ------------------------------------------------
 
 def main():
