@@ -81,6 +81,8 @@ train_dataset, val_dataset, test_dataset = random_split(dataset=dataset, lengths
 batch_size = 32
 num_workers = 2
 dataloader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+dataloader_val = DataLoader(dataset=val_dataset, batch_size=batch_size)
+dataloader_test = DataLoader(dataset=test_dataset, batch_size=batch_size)
 next(iter(dataloader))
 
 # ----------------------------------------------- Downlaod ------------------------------------------------
@@ -155,11 +157,35 @@ def training_loop(model, dataloader, optimizer, criterion, num_epochs=NUM_EPOCHS
 
 training_loop(model=model, dataloader=dataloader,optimizer=optimizer, criterion=criterion,  num_epochs=NUM_EPOCHS)
 # ----------------------------------------------- Model Evaluation ------------------------------------------------
-def evaluation(model, dataset, ):
+def evaluation(model, dataloader, device, criterion):
     model.eval()
     total_loss = 0
     correct_prediction = 0
-    total_sample
+    total_sample = 0
+
+    with torch.no_grad():
+        for inputs, targets in dataloader:
+            inputs, targets = inputs.to(device), targets.to(device)
+
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+            total_loss += loss.item() * inputs.size(0)
+            _ , predicted = torch.max(outputs, 1)
+            correct_prediction += (predicted == targets).sum().item()
+            total_sample += targets.size(0)
+    
+    average_loss = total_loss/ total_sample
+    accuracy = 100 * correct_prediction/ total_sample
+
+    print(f"Average Loss: {average_loss:.4f}, Accuracy: {accuracy:.2f}")
+    return average_loss, accuracy
+
+average_loss, accuracy = evaluation(model=model, dataloader=dataloader_val, device=device, criterion=criterion)
+
+
+
+
+
 
 
 

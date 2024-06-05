@@ -185,8 +185,8 @@ def evaluate(model, dataloader, device, criterion, optimizer):
                 correct_predictions += (predicted == targets).sum().item()
                 total_samples += targets.size(0)
 
-                average_loss = total_loss / total_samples
-                accuracy = 100 * correct_predictions / total_sample"
+        average_loss = total_loss / total_samples
+        accuracy = 100 * correct_predictions / total_sample"
 
 
 # ---------------------------------------------------------------------
