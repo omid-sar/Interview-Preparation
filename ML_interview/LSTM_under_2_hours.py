@@ -184,7 +184,7 @@ def evaluation(model, dataloader, device, criterion):
             outputs = model(inputs)
             loss = criterion(outputs, targets)
             total_loss += loss.item() * inputs.size(0)
-            _ , predicted = torch.max(outputs, 1)
+            _ , predicted = torch.max(outputs, 1) # the 1 indicates the dimension along which to find maximum values which refers to the dimention of class
             correct_prediction += (predicted == targets).sum().item()
             total_sample += targets.size(0)
     
