@@ -1,0 +1,100 @@
+{
+    "search_id": "7890",
+    "customer_id": "12345",
+    "timestamp": "2024-08-25T14:35:00Z",
+    "session_id": "abcd1234",
+    "search_query": {
+      "location": "New York City",
+      "check_in": "2024-09-01",
+      "check_out": "2024-09-07",
+      "guests": 2,
+      "property_type": ["Apartment", "Entire home"],
+      "price_range": {
+        "min": 100,
+        "max": 500
+      },
+      "amenities": ["WiFi", "Air conditioning", "Pool"],
+      "sort_by": "price",  // or "rating", "distance", etc.
+      "filters_applied": {
+        "pets_allowed": true,
+        "wheelchair_accessible": false
+      }
+    },
+    "search_results": [
+      {
+        "listing_id": "56789",
+        "listing_name": "Cozy Apartment in NYC",
+        "price_per_night": 150,
+        "rating": 4.8,
+        "distance_from_center": 1.2, // in miles
+        "thumbnail_url": "http://example.com/image1.jpg"
+      },
+      {
+        "listing_id": "67890",
+        "listing_name": "Modern Studio in Manhattan",
+        "price_per_night": 200,
+        "rating": 4.9,
+        "distance_from_center": 0.5, // in miles
+        "thumbnail_url": "http://example.com/image2.jpg"
+      }
+    ],
+    "clicks": [
+      {
+        "listing_id": "56789",
+        "timestamp": "2024-08-25T14:36:00Z",
+        "action": "viewed_listing",
+        "details": {
+          "page_number": 1,
+          "position_on_page": 1
+        }
+      },
+      {
+        "listing_id": "67890",
+        "timestamp": "2024-08-25T14:37:00Z",
+        "action": "viewed_listing",
+        "details": {
+          "page_number": 1,
+          "position_on_page": 2
+        }
+      }
+    ],
+    "actions": [
+      {
+        "action_type": "saved_listing",
+        "listing_id": "67890",
+        "timestamp": "2024-08-25T14:38:00Z"
+      },
+      {
+        "action_type": "shared_listing",
+        "listing_id": "56789",
+        "timestamp": "2024-08-25T14:39:00Z",
+        "platform": "social_media"
+      }
+    ],
+    "user_interactions": [
+      {
+        "interaction_type": "filter_change",
+        "timestamp": "2024-08-25T14:35:30Z",
+        "details": {
+          "new_filter": "price_range",
+          "value": "200-400"
+        }
+      },
+      {
+        "interaction_type": "sort_change",
+        "timestamp": "2024-08-25T14:36:15Z",
+        "details": {
+          "new_sort_by": "rating"
+        }
+      }
+    ],
+    "session_metadata": {
+      "device_type": "mobile",
+      "browser": "Chrome",
+      "operating_system": "iOS 16",
+      "geolocation": {
+        "latitude": 40.7128,
+        "longitude": -74.0060
+      }
+    }
+  }

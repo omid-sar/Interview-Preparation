@@ -41,10 +41,3 @@ def create_transformed_gussain_dist(points):
     return 
 create_transformed_gussain_dist(1000)
 
-
-
-
-guassian_dist = Rotation_matrix @ guassian_dist
-np.random.normal(loc=1, scale=1, size=1000)
-
-np.linalg.eigh()
