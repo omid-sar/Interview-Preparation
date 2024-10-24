@@ -73,3 +73,15 @@ print(activations)
 class LSTM(nn.Module):
     def __init__(self, )
         
+import numpy as np
+np.random.seed(42)
+m, n = 16, 100
+X = np.random.randn(m,n)
+X = np.random.rand(2,4)
+
+
+import numpy as np
+np.random.seed(42)
+m, n = 16, 100
+print(np.random.randn(m,n))
+print(np.random.randn(m,n))
